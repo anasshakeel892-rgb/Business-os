@@ -1,7 +1,6 @@
 export default async function handler(req, res) {
   const { agentId, agentName } = req.body
-  const key = process.env.GEMINI_API_KEY
-  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${key}`
+  const key = process.env.GROQ_API_KEY
 
   const fallback = {
     hr: { priority: 'HIGH', title: 'Recruit at least one AI consultant', description: 'No team means inability to deliver on client projects.' },
@@ -15,19 +14,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const r = await fetch(url, {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${key}`
+      },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: `You are the ${agentName} AI agent. Propose one urgent business task. Respond ONLY in JSON: {"priority":"HIGH","title":"task title","description":"reason"}`
-          }]
-        }]
+        model: 'llama3-8b-8192',
+        messages: [
+          { role: 'system', content: 'You are a business AI agent. Always respond in valid JSON only. No extra text.' },
+          { role: 'user', content: `You are the ${agentName} agent. Propose one urgent task. Respond ONLY in this JSON format: {"priority":"HIGH","title":"task title","description":"reason"}` }
+        ],
+        max_tokens: 200
       })
     })
     const d = await r.json()
-    const text = d?.candidates?.[0]?.content?.parts?.[0]?.text
+    const text = d?.choices?.[0]?.message?.content
     if (text) {
       const clean = text.replace(/```json|```/g, '').trim()
       res.status(200).json(JSON.parse(clean))
@@ -37,4 +40,4 @@ export default async function handler(req, res) {
   } catch (e) {
     res.status(200).json(fallback[agentId])
   }
-            }
+      }

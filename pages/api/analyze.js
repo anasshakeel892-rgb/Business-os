@@ -1,9 +1,7 @@
 export default async function handler(req, res) {
   const { agentId, agentName } = req.body
-
   const key = process.env.GEMINI_API_KEY
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`
+  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${key}`
 
   const fallback = {
     hr: { priority: 'HIGH', title: 'Recruit at least one AI consultant', description: 'No team means inability to deliver on client projects.' },
@@ -16,30 +14,27 @@ export default async function handler(req, res) {
     leads: { priority: 'HIGH', title: 'Research and build list of 50 prospects', description: 'No leads means business growth is completely stalled.' },
   }
 
-  const body = {
-    contents: [{
-      parts: [{
-        text: `You are the ${agentName} AI agent. Propose one urgent business task. Respond ONLY in this exact JSON format with no extra text: {"priority":"HIGH","title":"your task title here","description":"your reason here"}`
-      }]
-    }]
-  }
-
   try {
     const r = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: `You are the ${agentName} AI agent. Propose one urgent business task. Respond ONLY in JSON: {"priority":"HIGH","title":"task title","description":"reason"}`
+          }]
+        }]
+      })
     })
     const d = await r.json()
     const text = d?.candidates?.[0]?.content?.parts?.[0]?.text
     if (text) {
       const clean = text.replace(/```json|```/g, '').trim()
-      const parsed = JSON.parse(clean)
-      res.status(200).json(parsed)
+      res.status(200).json(JSON.parse(clean))
     } else {
       res.status(200).json(fallback[agentId])
     }
   } catch (e) {
     res.status(200).json(fallback[agentId])
   }
-        }
+            }

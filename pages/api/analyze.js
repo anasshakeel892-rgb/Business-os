@@ -3,15 +3,7 @@ export default async function handler(req, res) {
 
   const key = process.env.GEMINI_API_KEY
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`
-
-  const body = {
-    contents: [{
-      parts: [{
-        text: `You are the ${agentName} AI agent. Propose one urgent business task. Respond ONLY in this exact JSON format with no extra text: {"priority":"HIGH","title":"your task title here","description":"your reason here"}`
-      }]
-    }]
-  }
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`
 
   const fallback = {
     hr: { priority: 'HIGH', title: 'Recruit at least one AI consultant', description: 'No team means inability to deliver on client projects.' },
@@ -22,6 +14,14 @@ export default async function handler(req, res) {
     support: { priority: 'MEDIUM', title: 'Create client onboarding templates', description: 'Lack of process leads to poor client experience.' },
     analytics: { priority: 'HIGH', title: 'Build weekly metrics dashboard', description: 'No data visibility means decisions made without insights.' },
     leads: { priority: 'HIGH', title: 'Research and build list of 50 prospects', description: 'No leads means business growth is completely stalled.' },
+  }
+
+  const body = {
+    contents: [{
+      parts: [{
+        text: `You are the ${agentName} AI agent. Propose one urgent business task. Respond ONLY in this exact JSON format with no extra text: {"priority":"HIGH","title":"your task title here","description":"your reason here"}`
+      }]
+    }]
   }
 
   try {
@@ -42,4 +42,4 @@ export default async function handler(req, res) {
   } catch (e) {
     res.status(200).json(fallback[agentId])
   }
-              }
+        }

@@ -21,6 +21,18 @@ export default function AgentPage() {
 
   const agent = agents[id] || agents.hr
 
+  const formatMessage = (text) => {
+    const lines = text.split('\n')
+    return lines.map((line, i) => {
+      // Bold **text**
+      line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Remove lone asterisks used as bullets
+      line = line.replace(/^\*\s+/, '• ')
+      // Numbered lines stay as is
+      return `<p style="margin: 4px 0">${line}</p>`
+    }).join('')
+  }
+
   const sendMessage = async () => {
     if (!input.trim()) return
     const userMsg = { role: 'user', text: input }
@@ -68,10 +80,14 @@ export default function AgentPage() {
               background: msg.role === 'user' ? agent.color : '#12121a',
               color: '#fff',
               fontSize: '13px',
-              lineHeight: '1.5',
+              lineHeight: '1.6',
               border: msg.role === 'agent' ? '1px solid #1e1e2e' : 'none'
             }}>
-              {msg.text}
+              {msg.role === 'agent' ? (
+                <div dangerouslySetInnerHTML={{ __html: formatMessage(msg.text) }} />
+              ) : (
+                msg.text
+              )}
             </div>
           </div>
         ))}
@@ -102,4 +118,4 @@ export default function AgentPage() {
       </div>
     </div>
   )
-}
+                         }

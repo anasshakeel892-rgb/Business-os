@@ -14,6 +14,8 @@ export default function Home() {
     { id: 'marketing', name: 'Marketing', description: 'Instagram, content strategy, growth', color: '#ec4899' },
     { id: 'finance', name: 'Finance', description: 'Budget tracking, invoices, expenses', color: '#3b82f6' },
     { id: 'support', name: 'Customer Support', description: 'Client queries, tickets, satisfaction', color: '#eab308' },
+    { id: 'analytics', name: 'Analytics', description: 'Data insights, reports, business metrics', color: '#06b6d4' },
+    { id: 'leads', name: 'Lead Generator', description: 'Prospect research, outreach, conversion', color: '#f43f5e' },
   ]
 
   const runAnalysis = async () => {
@@ -50,20 +52,22 @@ export default function Home() {
 
   return (
     <div className="min-h-screen p-4" style={{ background: '#0a0a0f' }}>
-      <CEOAgent onRun={runAnalysis} loading={loading} />
-      <TaskQueue tasks={tasks} onApprove={approveTask} onReject={rejectTask} />
-      <div className="mt-6">
-        <h2 className="text-white font-bold text-lg mb-4">DEPARTMENT AGENTS</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {agents.map(agent => (
-            <AgentCard
-              key={agent.id}
-              agent={agent}
-              isWorking={tasks.some(t => t.department === agent.name && t.status === 'running')}
-            />
-          ))}
+      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <CEOAgent onRun={runAnalysis} loading={loading} />
+        <TaskQueue tasks={tasks} onApprove={approveTask} onReject={rejectTask} />
+        <div className="mt-6">
+          <h2 style={{ color: '#fff', fontWeight: 'bold', fontSize: '18px', marginBottom: '16px' }}>DEPARTMENT AGENTS</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+            {agents.map(agent => (
+              <AgentCard
+                key={agent.id}
+                agent={agent}
+                isWorking={tasks.some(t => t.department === agent.name && t.status === 'running')}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
   )
-}
+          }

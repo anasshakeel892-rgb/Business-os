@@ -15,6 +15,8 @@ export default function AgentPage() {
     marketing: { name: 'Marketing', color: '#ec4899', emoji: '📱', description: 'Instagram, content strategy, growth' },
     finance: { name: 'Finance', color: '#3b82f6', emoji: '💳', description: 'Budget tracking, invoices, expenses' },
     support: { name: 'Customer Support', color: '#eab308', emoji: '🎧', description: 'Client queries, tickets, satisfaction' },
+    analytics: { name: 'Analytics', color: '#06b6d4', emoji: '📊', description: 'Data insights, reports, metrics' },
+    leads: { name: 'Lead Generator', color: '#f43f5e', emoji: '🎯', description: 'Prospect research, outreach, conversion' },
   }
 
   const agent = agents[id] || agents.hr
@@ -38,7 +40,6 @@ export default function AgentPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0f', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
       <div style={{ background: '#12121a', borderBottom: '1px solid #1e1e2e', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
         <button onClick={() => router.push('/')} style={{ background: 'transparent', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer' }}>←</button>
         <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: agent.color + '33', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>
@@ -50,13 +51,12 @@ export default function AgentPage() {
         </div>
       </div>
 
-      {/* Messages */}
       <div style={{ flex: 1, padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {messages.length === 0 && (
           <div style={{ textAlign: 'center', color: '#888', marginTop: '40px' }}>
-            <div style={{ fontSize: '40px', marginBottom: '12px' }}>{agent.emoji}</div>
-            <p style={{ fontSize: '14px' }}>Chat with {agent.name}</p>
-            <p style={{ fontSize: '12px', marginTop: '8px' }}>Ask me anything about {agent.description}</p>
+            <div style={{ fontSize: '48px', marginBottom: '12px' }}>{agent.emoji}</div>
+            <p style={{ fontSize: '16px', color: '#fff', marginBottom: '8px' }}>{agent.name}</p>
+            <p style={{ fontSize: '13px' }}>Ask me anything about {agent.description}</p>
           </div>
         )}
         {messages.map((msg, i) => (
@@ -68,6 +68,7 @@ export default function AgentPage() {
               background: msg.role === 'user' ? agent.color : '#12121a',
               color: '#fff',
               fontSize: '13px',
+              lineHeight: '1.5',
               border: msg.role === 'agent' ? '1px solid #1e1e2e' : 'none'
             }}>
               {msg.text}
@@ -83,7 +84,6 @@ export default function AgentPage() {
         )}
       </div>
 
-      {/* Input */}
       <div style={{ padding: '16px', background: '#12121a', borderTop: '1px solid #1e1e2e', display: 'flex', gap: '8px' }}>
         <input
           value={input}

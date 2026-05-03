@@ -3,12 +3,12 @@ export default async function handler(req, res) {
 
   const key = process.env.GEMINI_API_KEY
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`
 
   const body = {
     contents: [{
       parts: [{
-        text: `You are a business AI agent for ${agentId}. Answer this: ${message}`
+        text: `You are a business AI agent for ${agentId} department. Answer this professionally: ${message}`
       }]
     }]
   }
@@ -29,4 +29,4 @@ export default async function handler(req, res) {
   } catch (e) {
     res.status(200).json({ reply: e.message })
   }
-        }
+      }
